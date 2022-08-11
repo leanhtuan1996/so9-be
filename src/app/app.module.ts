@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configuration } from 'src/config/configuration';
 import { validateSchema } from 'src/config/validation';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmConfigService } from 'src/config/database/typeorm.config.service';
 
 @Module({
   imports: [
@@ -14,6 +16,11 @@ import { validateSchema } from 'src/config/validation';
       isGlobal: true,
       load: [configuration],
       validationSchema: validateSchema,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: TypeOrmConfigService,
+      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],
