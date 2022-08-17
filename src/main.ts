@@ -1,13 +1,33 @@
-import { ConfigService } from '@nestjs/config';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { MainAppModule } from './app/app.module';
-import { AllExceptionsFilter } from './app/exceptions/all-exception.filter';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import helmet from '@fastify/helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(MainAppModule);
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  const configService = app.get<ConfigService>(ConfigService);
-  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter, configService));
-  await app.listen(3000);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    MainAppModule,
+    new FastifyAdapter({ logger: true }),
+  );
+
+  // enable cors
+  app.enableCors();
+
+  // global prefix
+  app.setGlobalPrefix('api');
+
+  // global versioning
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: [VERSION_NEUTRAL, '1', '2'],
+  });
+
+  // global helmet (https://docs.nestjs.com/security/helmet)
+  await app.register(helmet);
+
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

@@ -9,6 +9,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
   createTypeOrmOptions(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     connectionName?: string,
   ): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
     return {

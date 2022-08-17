@@ -6,11 +6,19 @@ import { configuration } from 'src/config/configuration';
 import { validateSchema } from 'src/config/validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/features/auth/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import {
+  APP_FILTER,
+  APP_GUARD,
+  APP_INTERCEPTOR,
+  HttpAdapterHost,
+} from '@nestjs/core';
 import { LoggingInterceptor } from '@algoan/nestjs-logging-interceptor';
 import { UsersModule } from 'src/features/users/users.module';
-import { TypeOrmConfigService } from 'src/shared/typeorm/typeorm.service';
+import { TypeOrmConfigService } from 'src/core/typeorm/typeorm.service';
 import { AuthInterceptor } from 'src/features/auth/interceptors/auth.interceptor';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { AllExceptionsFilter } from './exceptions/all-exception.filter';
 
 @Module({
   imports: [
@@ -29,6 +37,10 @@ import { AuthInterceptor } from 'src/features/auth/interceptors/auth.interceptor
     }),
     AuthModule,
     UsersModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 5,
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -40,6 +52,21 @@ import { AuthInterceptor } from 'src/features/auth/interceptors/auth.interceptor
     {
       provide: APP_INTERCEPTOR,
       useClass: AuthInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_FILTER,
+      inject: [HttpAdapterHost, ConfigService],
+      useFactory: ({ httpAdapter }, configService) => {
+        return new AllExceptionsFilter(httpAdapter, configService);
+      },
     },
   ],
 })
