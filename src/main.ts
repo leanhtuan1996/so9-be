@@ -10,7 +10,7 @@ import helmet from '@fastify/helmet';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     MainAppModule,
-    new FastifyAdapter({ logger: true }),
+    new FastifyAdapter({ logger: false }),
   );
 
   // enable cors
