@@ -1,5 +1,16 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
+  "language": "ts",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "plugins": [
+      "@nestjs/swagger/plugin"
+    ],
+    "assets": [
+      {
+        "include": "i18n/*.json",
+        "outDir": "dist/src"
+      }
+    ]
+  }
 }
