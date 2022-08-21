@@ -55,19 +55,31 @@ export class AppConfigService {
   }
 
   get postgresConfig(): TypeOrmModuleOptions {
+    let entities = [
+      __dirname + '/../../modules/**/data/entities/*.entity{.ts,.js}',
+      __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
+    ];
+    let migrations = [
+      __dirname + '/../../modules/database/migrations/*{.ts,.js}',
+    ];
 
-    let entities = [__dirname + '/../../modules/**/data/entities/*.entity{.ts,.js}', __dirname + '/../../modules/**/*.view-entity{.ts,.js}'];
-    let migrations = [__dirname + '/../../modules/database/migrations/*{.ts,.js}'];
-    
     if (module.hot) {
-      const entityContext = require.context('./../../modules/**/data/**', true, /\.entity\.ts$/);
+      const entityContext = require.context(
+        './../../modules/**/data/**',
+        true,
+        /\.entity\.ts$/,
+      );
       entities = entityContext.keys().map((id) => {
         const entityModule = entityContext<Record<string, unknown>>(id);
         const [entity] = Object.values(entityModule);
 
         return entity as string;
       });
-      const migrationContext = require.context('./../../database/migrations', false, /\.ts$/);
+      const migrationContext = require.context(
+        './../../database/migrations',
+        false,
+        /\.ts$/,
+      );
 
       migrations = migrationContext.keys().map((id) => {
         const migrationModule = migrationContext<Record<string, unknown>>(id);
@@ -94,7 +106,6 @@ export class AppConfigService {
       namingStrategy: new SnakeNamingStrategy(),
       synchronize: this.isDevelopment ? true : false,
     };
-    
   }
 
   get awsS3Config() {
@@ -141,6 +152,7 @@ export class AppConfigService {
       throw new Error(key + ' environment variable does not set'); // probably we should call process.exit() too to avoid locking the service
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return value;
   }

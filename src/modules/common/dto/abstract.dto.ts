@@ -1,7 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
 import { DYNAMIC_TRANSLATION_DECORATOR_KEY } from '../../app/decorators';
 import { ContextProvider } from '../../app/providers';
-
 import type { AbstractEntity } from '../entity/abstract.entity';
 
 export class AbstractDto {
@@ -14,7 +14,8 @@ export class AbstractDto {
   @ApiProperty()
   updatedAt: Date;
 
-  @ApiProperty({ type: () => AbstractTranslationDto })
+  // eslint-disable-next-line @moneteam/nestjs/api-property-returning-array-should-set-array, @typescript-eslint/no-use-before-define
+  @ApiPropertyOptional({ type: () => AbstractTranslationDto })
   translations?: AbstractTranslationDto[];
 
   constructor(entity: AbstractEntity, options?: { excludeFields?: boolean }) {

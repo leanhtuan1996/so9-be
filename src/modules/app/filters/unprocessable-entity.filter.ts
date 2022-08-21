@@ -1,9 +1,10 @@
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
-import { Catch, UnprocessableEntityException } from '@nestjs/common';
-import { AbstractHttpAdapter, Reflector } from '@nestjs/core';
+import { Catch } from '@nestjs/common';
+import { AbstractHttpAdapter } from '@nestjs/core';
 import type { ValidationError } from 'class-validator';
 import type { Response } from 'express';
 import _ from 'lodash';
+
 import { AppConfigService } from '../../config/config.service';
 import { UnprocessEntityException } from '../exceptions';
 
@@ -11,8 +12,10 @@ import { UnprocessEntityException } from '../exceptions';
 export class UnprocessableExceptionFilter
   implements ExceptionFilter<UnprocessEntityException>
 {
-  constructor( private readonly httpAdapterHost: AbstractHttpAdapter,
-    private readonly configService: AppConfigService) {}
+  constructor(
+    private readonly httpAdapterHost: AbstractHttpAdapter,
+    private readonly configService: AppConfigService,
+  ) {}
 
   catch(exception: UnprocessEntityException, host: ArgumentsHost): void {
     const httpAdapter = this.httpAdapterHost;
@@ -31,10 +34,10 @@ export class UnprocessableExceptionFilter
       message: 'Your input is not valid, please check your input',
       errorCode: exception.errorCode,
       errorStack: validationErrors,
-    }
+    } as Record<string, unknown>;
 
     if (this.configService.isDevelopment) {
-      responseBody['traceBack'] = exception.stack;
+      responseBody.traceBack = exception.stack;
     }
 
     response.status(statusCode).json(responseBody);

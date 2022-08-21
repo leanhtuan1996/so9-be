@@ -1,13 +1,15 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Constructor } from '../../../types';
-import { AbstractDto, AbstractTranslationDto } from '../dto/abstract.dto';
-import { ApiProperty } from '@nestjs/swagger';
+
+import type { Constructor } from '../../../types';
 import { LanguageCode } from '../../lang/constants';
+import type { AbstractDto } from '../dto/abstract.dto';
+import { AbstractTranslationDto } from '../dto/abstract.dto';
 
 /**
  * Abstract Entity
@@ -43,7 +45,8 @@ export abstract class AbstractEntity<
   })
   updatedAt: Date;
 
-  @ApiProperty({ type: () => AbstractTranslationDto })
+  // eslint-disable-next-line @moneteam/nestjs/api-property-returning-array-should-set-array
+  @ApiPropertyOptional({ type: () => AbstractTranslationDto })
   translations?: AbstractTranslationEntity[];
 
   private dtoClass: Constructor<DTO, [AbstractEntity, O?]>;

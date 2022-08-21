@@ -1,25 +1,27 @@
 import {
   HttpStatus,
   ValidationPipe,
-  VersioningType,
   VERSION_NEUTRAL,
+  VersioningType,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import {
-  initializeTransactionalContext,
-  patchTypeORMRepositoryWithBaseRepository,
-} from 'typeorm-transactional-cls-hooked';
-import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
-import { MainAppModule } from './modules/app/app.module';
+import type { NestExpressApplication } from '@nestjs/platform-express';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import compression from 'compression';
 import { middleware as expressCtx } from 'express-ctx';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import compression from 'compression';
-import { setupSwagger } from './setup-swagger';
+import {
+  initializeTransactionalContext,
+  patchTypeORMRepositoryWithBaseRepository,
+} from 'typeorm-transactional-cls-hooked';
+
+import { MainAppModule } from './modules/app/app.module';
+import { UnprocessEntityException } from './modules/app/exceptions';
 import { AppConfigModule } from './modules/config/config.module';
 import { AppConfigService } from './modules/config/config.service';
-import { UnprocessEntityException } from './modules/app/exceptions';
+import { setupSwagger } from './setup-swagger';
 
 export async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext();
@@ -66,7 +68,8 @@ export async function bootstrap(): Promise<NestExpressApplication> {
       transformOptions: {
         enableImplicitConversion: true,
       },
-      exceptionFactory: (errors) => new UnprocessEntityException('error.field.validation', errors),
+      exceptionFactory: (errors) =>
+        new UnprocessEntityException('error.field.validation', errors),
     }),
   );
 

@@ -1,11 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AppConfigService } from '../../config/config.service';
-import { UserEntity } from '../../users/data/entities/user.entity';
-import { UsersService } from '../../users/domain/services/users.service';
-import { RoleType, TokenType } from '../constants';
 
+import { AppConfigService } from '../../config/config.service';
+import type { UserEntity } from '../../users/data/entities/user.entity';
+import { UsersService } from '../../users/domain/services/users.service';
+import type { RoleType } from '../constants';
+import { TokenType } from '../constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,7 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     type: TokenType;
   }): Promise<UserEntity> {
     if (args.type !== TokenType.ACCESS_TOKEN) {
-      throw new UnauthorizedException('Your access token is invalid or expired');
+      throw new UnauthorizedException(
+        'Your access token is invalid or expired',
+      );
     }
 
     const user = await this.userService.findOne({
@@ -35,7 +38,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Your access token is invalid or expired');
+      throw new UnauthorizedException(
+        'Your access token is invalid or expired',
+      );
     }
 
     return user;

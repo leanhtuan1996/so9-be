@@ -1,16 +1,24 @@
 {
-    // I want my default to be 4, but JavaScript/JSON to be 2
-    "editor.tabSize": 4,
-    "[javascript]": {
-        "editor.tabSize": 2
-    },
-    "[typescript]": {
-        "editor.tabSize": 2
-    },
-    "[json]": {
-        "editor.tabSize": 2
-    },
+  // I want my default to be 4, but JavaScript/JSON to be 2
+  "editor.tabSize": 4,
+  "editor.formatOnSave": true,
+  "eslint.debug": true,
+  "eslint.lintTask.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": false
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
 
-    // This one forces the tab to be **space**
-    "editor.insertSpaces": true
+  // This one forces the tab to be **space**
+  "editor.insertSpaces": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true
 }

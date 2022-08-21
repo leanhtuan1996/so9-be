@@ -1,7 +1,7 @@
-import { IBaseInterfaceRepository } from "../../../app/interfaces";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { IBaseInterfaceRepository } from '../../../app/interfaces';
 
-
-export interface UsersRepository extends IBaseInterfaceRepository {
+export interface IUsersRepository extends IBaseInterfaceRepository {
   findByEmail(email: string): Promise<any>;
-  findOneBy(findData: any): Promise<any>;
+  findOneBy(findData: unknown): Promise<any>;
 }

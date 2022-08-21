@@ -2,8 +2,8 @@ import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import _ from 'lodash';
-import { UserEntity } from '../../users/data/entities/user.entity';
 
+import type { UserEntity } from '../../users/data/entities/user.entity';
 import type { RoleType } from '../constants';
 
 @Injectable()

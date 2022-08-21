@@ -1,12 +1,13 @@
-import {
+import type {
   CallHandler,
   ExecutionContext,
-  Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
-export interface Response<T> {
+export interface IResponse<T> {
   statusCode: number;
   message: string;
   timestamp: string;
@@ -15,18 +16,18 @@ export interface Response<T> {
 
 @Injectable()
 export class TransformInterceptor<T>
-  implements NestInterceptor<T, Response<T>>
+  implements NestInterceptor<T, IResponse<T>>
 {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response<T>> {
+  ): Observable<IResponse<T>> {
     return next.handle().pipe(
       map((data) => ({
         statusCode: context.switchToHttp().getResponse().statusCode,
         timestamp: new Date().toISOString(),
         message: data.message || 'OK',
-        data: data,
+        data,
       })),
     );
   }

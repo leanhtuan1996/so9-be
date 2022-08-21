@@ -455,5 +455,10 @@ module.exports = {
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/string-content': 'off',
     'unicorn/throw-new-error': 'error',
+
+    /**
+     * plugin:@moneteam/nestjs
+     */
+    '@moneteam/nestjs/injectable-should-be-provided': 'off',
   },
 };

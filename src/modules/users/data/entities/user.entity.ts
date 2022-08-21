@@ -1,10 +1,13 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
+
 import { UseDto, VirtualColumn } from '../../../app/decorators';
 import { RoleType } from '../../../auth/constants';
-import { AbstractEntity, IAbstractEntity } from '../../../common/entity/abstract.entity';
-import { UserDto, UserDtoOptions } from '../../dto/user.dto';
-import { IUserSettingsEntity, UserSettingsEntity } from './user-setting.entity';
-
+import type { IAbstractEntity } from '../../../common/entity/abstract.entity';
+import { AbstractEntity } from '../../../common/entity/abstract.entity';
+import type { UserDtoOptions } from '../../dto/user.dto';
+import { UserDto } from '../../dto/user.dto';
+import type { IUserSettingsEntity } from './user-setting.entity';
+import { UserSettingsEntity } from './user-setting.entity';
 
 export interface IUserEntity extends IAbstractEntity<UserDto> {
   firstName?: string;
@@ -27,7 +30,7 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
 }
 
 @Entity({
-  name: "users",
+  name: 'users',
 })
 @UseDto(UserDto)
 export class UserEntity
@@ -60,5 +63,4 @@ export class UserEntity
 
   @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
   settings?: UserSettingsEntity;
-
 }

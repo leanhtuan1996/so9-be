@@ -1,47 +1,42 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
-import { UserEntity } from '../../data/entities/user.entity';
+import type { FindOptionsWhere } from 'typeorm';
+
+import type { UserEntity } from '../../data/entities/user.entity';
 import { USERS_REPOSITORY } from '../../users.constants';
-import { CreateUserModel } from '../models/create-user.model';
-import { UpdateUserModel } from '../models/update-user.model';
-import { UsersRepository } from '../repositories/users.repository';
+import type { CreateUserModel } from '../models/create-user.model';
+import { IUsersRepository } from '../repositories/users.repository';
 
 @Injectable()
 export class UsersService {
-  private readonly _usersRepository: UsersRepository;
+  constructor(
+    @Inject(USERS_REPOSITORY)
+    private readonly usersRepository: IUsersRepository,
+  ) {}
 
-  constructor(@Inject(USERS_REPOSITORY) usersRepository: UsersRepository) {
-    this._usersRepository = usersRepository;
+  findById(id: number): Promise<UserEntity | undefined> {
+    return this.usersRepository.findById(id);
   }
 
-  async findById(id: number): Promise<UserEntity | undefined> {    
-    return await this._usersRepository.findById(id);
+  findByIds(ids: [number]): Promise<UserEntity[]> {
+    return this.usersRepository.findByIds(ids);
   }
 
-  async findByIds(ids: [number]): Promise<UserEntity[]> {
-    return await this._usersRepository.findByIds(ids);
+  findByEmail(email: string): Promise<UserEntity | undefined> {
+    return this.usersRepository.findByEmail(email);
   }
 
-  async findByEmail(email: string): Promise<UserEntity | undefined> {
-    return await this._usersRepository.findByEmail(email);
+  create(data: CreateUserModel): Promise<UserEntity> {
+    return this.usersRepository.create(data);
   }
 
-  async create(data: CreateUserModel): Promise<UserEntity> {
-    return await this._usersRepository.create(data);
-  }
-
-  async update(id: number, data: UpdateUserModel): Promise<UserEntity> {
-    return await this._usersRepository.update(id, data);
-  }
-
-  async delete(id: number): Promise<boolean> {
-    return await this._usersRepository.delete(id);
+  delete(id: number): Promise<boolean> {
+    return this.usersRepository.delete(id);
   }
 
   /**
    * Find single user
    */
-   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
-    return this._usersRepository.findOneBy(findData);
+  findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
+    return this.usersRepository.findOneBy(findData);
   }
 }

@@ -1,1 +1,1 @@
-export * from './unprocess-entity.exception'
+export * from './unprocess-entity.exception';

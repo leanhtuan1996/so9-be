@@ -1,7 +1,7 @@
 import { getValue, setValue } from 'express-ctx';
-import { LanguageCode } from '../../lang/constants';
 
-import { UserEntity } from '../../users/data/entities/user.entity';
+import type { LanguageCode } from '../../lang/constants';
+import type { UserEntity } from '../../users/data/entities/user.entity';
 
 export class ContextProvider {
   private static readonly nameSpace = 'request';

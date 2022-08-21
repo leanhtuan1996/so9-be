@@ -1,8 +1,10 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { UseDto } from '../../../app/decorators';
-import { AbstractEntity, IAbstractEntity } from '../../../common/entity/abstract.entity';
-import { UserDto, UserDtoOptions } from '../../dto/user.dto';
 
+import { UseDto } from '../../../app/decorators';
+import type { IAbstractEntity } from '../../../common/entity/abstract.entity';
+import { AbstractEntity } from '../../../common/entity/abstract.entity';
+import type { UserDtoOptions } from '../../dto/user.dto';
+import { UserDto } from '../../dto/user.dto';
 import type { IUserEntity } from './user.entity';
 import { UserEntity } from './user.entity';
 

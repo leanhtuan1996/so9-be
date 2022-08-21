@@ -1,14 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { UsersUsecase } from '../domain/usecases/users.usecase';
 
 @Controller('user')
+@ApiTags('user')
 export class UsersController {
-  constructor(private readonly _usersUseCase: UsersUsecase) {}
-
-  @Get('profile')
-  getProfile() {
-    return {
-      message: 'Hello World',
-    };
-  }
+  constructor(private readonly usersUseCase: UsersUsecase) {}
 }

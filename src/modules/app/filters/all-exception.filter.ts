@@ -1,11 +1,7 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
+import { Catch, HttpException, HttpStatus } from '@nestjs/common';
 import { AbstractHttpAdapter } from '@nestjs/core';
+
 import { AppConfigService } from '../../config/config.service';
 
 @Catch(Error)
@@ -32,10 +28,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       message: exception.message,
-    };
+    } as Record<string, unknown>;
 
     if (this.configService.isDevelopment) {
-      responseBody['traceBack'] = exception.stack;
+      responseBody.traceBack = exception.stack;
     }
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

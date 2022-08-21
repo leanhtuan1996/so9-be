@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
 import { RoleType } from '../../auth/constants';
 import { AbstractDto } from '../../common/dto/abstract.dto';
-import { UserEntity } from '../data/entities/user.entity';
-
+import type { UserEntity } from '../data/entities/user.entity';
 
 // TODO, remove this class and use constructor's second argument's type
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
@@ -17,6 +17,7 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   username: string;
 
+  // eslint-disable-next-line @moneteam/nestjs/api-property-matches-property-optionality, @moneteam/nestjs/api-enum-property-best-practices
   @ApiPropertyOptional({ enum: RoleType })
   role: RoleType;
 

@@ -1,43 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
-import { UsersRepository } from '../../domain/repositories/users.repository';
+import type { FindOneOptions, FindOptionsWhere } from 'typeorm';
+import { Repository } from 'typeorm';
+
+import type { IUsersRepository } from '../../domain/repositories/users.repository';
 import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
-export class UsersRepositoryImpl implements UsersRepository {
-  private readonly _usersRepository: Repository<UserEntity>;
-
+export class UsersRepositoryImpl implements IUsersRepository {
   constructor(
-    @InjectRepository(UserEntity) userEntity: Repository<UserEntity>,
-  ) {
-    this._usersRepository = userEntity;
-  }
-  findOneBy(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
-    return this._usersRepository.findOneBy(findData);
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
+  ) {}
+
+  findOneBy(
+    findData: FindOptionsWhere<UserEntity>,
+  ): Promise<UserEntity | null> {
+    return this.usersRepository.findOneBy(findData);
   }
 
   findByEmail(email: string): Promise<UserEntity | null> {
-    return this._usersRepository.findOneBy({ email });
+    return this.usersRepository.findOneBy({ email });
   }
-  index(): Promise<UserEntity> {
-    throw new Error('Method not implemented.');
+
+  findById(id: Uuid): Promise<UserEntity | null> {
+    return this.usersRepository.findOne({
+      id,
+    } as FindOneOptions<UserEntity>);
   }
-  findById(id: any): Promise<UserEntity | null> {
-    return this._usersRepository.findOne(id);
+
+  findByIds(ids: [Uuid]): Promise<UserEntity[]> {
+    return this.usersRepository.createQueryBuilder().whereInIds(ids).getMany();
   }
-  findByIds(ids: [any]): Promise<UserEntity[]> {
-    return this._usersRepository.createQueryBuilder().whereInIds(ids).getMany();
-  }
+
   create(data: UserEntity): Promise<UserEntity> {
-    return this._usersRepository.save(data);
+    return this.usersRepository.save(data);
   }
-  async update(id: number, data: any): Promise<UserEntity> {
-    const res = await this._usersRepository.update(id, data);
-    return res.raw;
-  }
+
   async delete(id: number): Promise<boolean> {
-    const res = await this._usersRepository.delete(id);
+    const res = await this.usersRepository.delete(id);
+
     return res.affected ?? 0 ? true : false;
   }
 }

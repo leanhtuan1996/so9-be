@@ -1,3 +1,2 @@
-
-export * from './translation.interface';
 export * from './repository.interface';
+export * from './translation.interface';

@@ -1,47 +1,49 @@
 import {
-  Controller,
-  Post,
   Body,
-  Version,
+  Controller,
+  Get,
   HttpCode,
   HttpStatus,
-  Get,
+  Post,
+  Version,
 } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+
+import { UserEntity } from '../users/data/entities/user.entity';
+import { UserDto } from '../users/dto/user.dto';
+import { RoleType } from './constants';
+import { AuthUser } from './decorators';
+import { Auth } from './decorators/auth.decorator';
 import {
   AuthSignInEmailPasswordModel,
   AuthSignUpEmailPasswordModel,
   LoginPayloadDto,
 } from './dto';
-import { ApiTags } from '@nestjs/swagger';
-import { RoleType } from './constants';
-import { Auth } from './decorators/auth.decorator';
-import { AuthUser } from './decorators';
-import { UserEntity } from '../users/data/entities/user.entity';
-import { UserDto } from '../users/dto/user.dto';
-
+import { AuthService } from './services/auth.service';
 
 @Controller({
   path: 'auth',
 })
 @ApiTags('auth')
 export class AuthController {
-  private readonly _authService: AuthService;
-
-  constructor(authService: AuthService) {
-    this._authService = authService;
-  }
+  constructor(private readonly authService: AuthService) {}
 
   @Version('1')
   @HttpCode(HttpStatus.OK)
   @Post('sign-in')
-  async login(@Body() userLoginModel: AuthSignInEmailPasswordModel) : Promise<LoginPayloadDto>{
-    const userEntity = await this._authService.signInWithEmailPassword(
+  @ApiOkResponse({
+    type: LoginPayloadDto,
+    description: 'User info with access token',
+  })
+  async login(
+    @Body() userLoginModel: AuthSignInEmailPasswordModel,
+  ): Promise<LoginPayloadDto> {
+    const userEntity = await this.authService.signInWithEmailPassword(
       userLoginModel.email,
       userLoginModel.password,
     );
 
-    const token = await this._authService.createAccessToken({
+    const token = await this.authService.createAccessToken({
       userId: userEntity.id,
       role: userEntity.role,
     });
@@ -52,14 +54,24 @@ export class AuthController {
   @Version('1')
   @Post('sign-up')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() userLoginModel: AuthSignUpEmailPasswordModel) {
-    return this._authService.signUpWithEmailPassword(userLoginModel);
+  @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
+  async register(
+    @Body() userLoginModel: AuthSignUpEmailPasswordModel,
+  ): Promise<UserDto> {
+    const createdUser = await this.authService.signUpWithEmailPassword(
+      userLoginModel,
+    );
+
+    return createdUser.toDto({
+      isActive: true,
+    });
   }
 
   @Version('1')
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @Auth([RoleType.USER, RoleType.ADMIN])
+  @ApiOkResponse({ type: UserDto, description: 'current user info' })
   getCurrentUser(@AuthUser() user: UserEntity): UserDto {
     return user.toDto();
   }

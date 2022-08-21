@@ -1,1 +1,1 @@
-export * from './lang.interceptor'
+export * from './lang.interceptor';

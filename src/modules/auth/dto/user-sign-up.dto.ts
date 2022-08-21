@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+
 import { Match } from '../../app/decorators';
 
 export class AuthSignUpEmailPasswordModel {
@@ -20,7 +21,7 @@ export class AuthSignUpEmailPasswordModel {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![\n.])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'Password too weak',
   })
   password: string;

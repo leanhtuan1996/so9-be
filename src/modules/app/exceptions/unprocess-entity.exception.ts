@@ -1,10 +1,10 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 
 export class UnprocessEntityException extends UnprocessableEntityException {
-
   readonly errorCode: string;
 
-  constructor(errorCode: string, objectOrError?: string | object | any, ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(errorCode: string, objectOrError?: string | any) {
     super(objectOrError);
     this.errorCode = errorCode;
   }
