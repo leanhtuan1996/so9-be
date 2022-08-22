@@ -33,8 +33,11 @@ export class UsersRepositoryImpl implements IUsersRepository {
     return this.usersRepository.createQueryBuilder().whereInIds(ids).getMany();
   }
 
-  create(data: UserEntity): Promise<UserEntity> {
-    return this.usersRepository.save(data);
+  async create(data: UserEntity): Promise<UserEntity> {
+    const user = this.usersRepository.create(data);
+    await this.usersRepository.save(user);
+
+    return user;
   }
 
   async delete(id: number): Promise<boolean> {
