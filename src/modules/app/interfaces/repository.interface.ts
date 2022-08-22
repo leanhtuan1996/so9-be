@@ -4,4 +4,5 @@ export interface IBaseInterfaceRepository {
   findByIds(ids: [any]): Promise<any[]>;
   create(data: any): Promise<any>;
   delete(id: any): Promise<boolean>;
+  findOneBy(findData: unknown): Promise<any>;
 }
